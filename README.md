@@ -252,6 +252,11 @@ O controle é feito tanto na navbar (`includes/header.php`, oculta os links) qua
 
 ## Preview
 
+### Tela de Login
+Ponto de entrada do sistema, com autenticação por e-mail e senha (hash bcrypt) e sessão protegida contra session fixation.
+
+![Login](docs/screenshots/login.png)
+
 ### Dashboard
 Visão geral com status das mesas, pedidos abertos, faturamento do dia e últimos pedidos.
 
