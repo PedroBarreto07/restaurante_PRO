@@ -44,9 +44,9 @@ RestaurantePRO/
 │   ├── auth.php                 # POST → login e geração de token
 │   ├── core.php                 # Helpers: resposta(), erro(), autenticarToken()
 │   ├── mesas.php                # GET → lista mesas (com filtro por status)
-│   ├── pedidos.php               # GET/POST/PUT → consulta, cria, fecha e cancela pedidos
-│   ├── produtos.php              # GET → lista produtos do cardápio
-│   └── relatorio.php             # GET → relatório de faturamento (somente gerente)
+│   ├── pedidos.php              # GET/POST/PUT → consulta, cria, fecha e cancela pedidos
+│   ├── produtos.php             # GET → lista produtos do cardápio
+│   └── relatorio.php            # GET → relatório de faturamento (somente gerente)
 │
 ├── assets/
 │   ├── css/
@@ -70,7 +70,7 @@ RestaurantePRO/
 │   ├── mesas.php
 │   ├── pedidos.php
 │   ├── relatorio.php              # restrito a perfil "gerente"
-│   ├── usuarios.php                # restrito a perfil "gerente"
+│   ├── usuarios.php               # restrito a perfil "gerente"
 │   └── ver_pedido.php
 │
 ├── relatorios/                  # Geração de PDFs
@@ -78,10 +78,11 @@ RestaurantePRO/
 │   └── faturamento_pdf.php        # Relatório de faturamento em PDF
 │
 ├── banco.sql                    # Script de criação das tabelas
-├── banco.zip                    # Backup/dump completo do banco (não versionado)
-├── gerar_senha.php               # Utilitário para gerar hash bcrypt de senha
+├── gerar_senha.php               # Utilitário para gerar hash bcrypt de senha (não versionado)
 └── index.php                     # Página de login / ponto de entrada
 ```
+
+> `includes/config.php`, `gerar_senha.php` e `banco.zip` estão no `.gitignore` e **não vão para o repositório**. Isso é proposital: o primeiro guarda credenciais, e os outros dois são utilitários/backups locais que não fazem sentido versionar.
 
 ---
 
@@ -97,50 +98,6 @@ O projeto tem **duas frentes de autenticação separadas**, e é importante ente
    - Toda outra rota da API (`mesas.php`, `pedidos.php`, `produtos.php`, `relatorio.php`) exige o header `Authorization: Bearer SEU_TOKEN`, validado por `autenticarToken()` em `api/core.php`
 
 Essas duas autenticações são **independentes** — logar no site não gera automaticamente um token de API, e vice-versa.
-
----
-
-## Preview
-
-### Dashboard
-Visão geral com status das mesas, pedidos abertos, faturamento do dia e últimos pedidos.
-
-![Dashboard](docs/screenshots/dashboard.png)
-
-### Pedidos
-Listagem com filtros por data, mesa, status e cliente, com ações de visualizar e exportar em PDF.
-
-![Pedidos](docs/screenshots/pedidos.png)
-
-### Mesas
-Controle visual do status de cada mesa (livre, ocupada, reservada), com capacidade e localização.
-
-![Mesas](docs/screenshots/mesas.png)
-
-### Cardápio
-Gestão de produtos por categoria, com preço e disponibilidade.
-
-![Cardápio](docs/screenshots/cardapio.png)
-
-### Clientes
-Cadastro com busca por nome, CPF ou e-mail.
-
-![Clientes](docs/screenshots/clientes.png)
-
-### Conversor de Moeda
-Cotação do Real em tempo real via ExchangeRate-API, para atendimento a clientes estrangeiros.
-
-![Conversor de Moeda](docs/screenshots/conversor.png)
-
-### Usuários
-Controle de acesso por perfil (gerente / atendente).
-
-![Usuários](docs/screenshots/usuarios.png)
-
-### Relatório de Faturamento
-Total faturado, pedidos fechados, ticket médio e item mais vendido, filtrável por período.
-
-![Relatório de Faturamento](docs/screenshots/relatorio.png)
 
 ---
 
@@ -170,10 +127,10 @@ Abra o **XAMPP Control Panel** e inicie:
 ### 4. Criar e importar o banco de dados
 
 1. Acesse `http://localhost/phpmyadmin`
-2. Crie um banco de dados chamado `restaurantepro` (mesmo nome usado em `DB_NAME`, no passo 5)
+2. Crie um banco de dados chamado `restaurantepro` (mesmo nome usado em `DB_NAME`, no passo 5) — ou simplesmente importe o `banco.sql`, que já cria o banco automaticamente com `CREATE DATABASE IF NOT EXISTS`
 3. Selecione o banco criado, vá em **Importar** e envie o arquivo `banco.sql` (na raiz do projeto)
 
-> ⚠️ **Importante:** o arquivo `api/auth.php` grava o token de acesso na coluna `token_api` da tabela `usuarios`. Confira se essa coluna já existe no `banco.sql` importado; se não existir, crie manualmente:
+> ⚠️ **Importante:** o arquivo `api/auth.php` grava o token de acesso na coluna `token_api` da tabela `usuarios`. Essa coluna **não** vem criada no `banco.sql` — adicione manualmente antes de usar a API:
 > ```sql
 > ALTER TABLE usuarios ADD COLUMN token_api VARCHAR(64) NULL;
 > ```
@@ -198,13 +155,21 @@ define('DB_PASS', '');   // sua senha do MySQL local
 
 Os valores padrão já funcionam com uma instalação limpa do XAMPP (usuário `root`, senha vazia).
 
-### 6. Gerar uma senha de usuário (se precisar)
+### 6. Criar um usuário para login
 
-Use o utilitário `gerar_senha.php` para gerar o hash bcrypt de uma senha e inserir manualmente um novo usuário na tabela `usuarios` via phpMyAdmin:
+O `banco.sql` não vem com nenhum usuário pré-cadastrado. Gere o hash bcrypt de uma senha com o utilitário:
 
 ```
 http://localhost/restaurante-pro/gerar_senha.php
 ```
+
+Isso imprime o hash bcrypt correspondente à senha `123456` (pode editar o arquivo para gerar o hash de outra senha). Copie o hash gerado e insira manualmente um novo registro na tabela `usuarios` pelo phpMyAdmin, por exemplo:
+
+| nome | email | senha | perfil | ativo |
+|---|---|---|---|---|
+| Pedro | gerente@restaurante.com | *(hash gerado)* | gerente | 1 |
+
+> Esse arquivo não é versionado no Git por segurança — ele existe só como utilitário local de desenvolvimento. Depois de criar seu usuário, é uma boa prática apagá-lo ou bloquear o acesso a ele.
 
 ### 7. Acessar o sistema
 
@@ -212,11 +177,11 @@ http://localhost/restaurante-pro/gerar_senha.php
 http://localhost/restaurante-pro/index.php
 ```
 
-Faça login com um usuário existente no `banco.sql` (confira a tabela `usuarios` no phpMyAdmin) ou crie um novo pelo passo anterior.
+Faça login com o usuário criado no passo anterior.
 
 ---
 
-## 📄 API REST
+## API REST
 
 Todos os endpoints (exceto `auth.php`) exigem o header:
 ```
@@ -282,6 +247,23 @@ Sem esse arquivo, todas as chamadas autenticadas da API retornam erro 401, mesmo
 | **Atendente** | Acesso a: dashboard, pedidos, mesas, cardápio, clientes, conversor (sem usuários/relatório) |
 
 O controle é feito tanto na navbar (`includes/header.php`, oculta os links) quanto no back-end das páginas restritas, via `exigirGerente()`.
+
+---
+
+## Screenshots
+
+> Adicione capturas de tela do sistema em `docs/screenshots/` e referencie-as abaixo — elas ajudam bastante quem for avaliar o projeto no GitHub.
+
+```markdown
+![Dashboard](docs/screenshots/dashboard.png)
+![Pedidos](docs/screenshots/pedidos.png)
+![Mesas](docs/screenshots/mesas.png)
+![Cardápio](docs/screenshots/cardapio.png)
+![Clientes](docs/screenshots/clientes.png)
+![Conversor de Moeda](docs/screenshots/conversor.png)
+![Usuários](docs/screenshots/usuarios.png)
+![Relatório de Faturamento](docs/screenshots/relatorio.png)
+```
 
 ---
 
