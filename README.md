@@ -250,20 +250,47 @@ O controle é feito tanto na navbar (`includes/header.php`, oculta os links) qua
 
 ---
 
-## Screenshots
+## Preview
 
-> Adicione capturas de tela do sistema em `docs/screenshots/` e referencie-as abaixo — elas ajudam bastante quem for avaliar o projeto no GitHub.
+### Dashboard
+Visão geral com status das mesas, pedidos abertos, faturamento do dia e últimos pedidos.
 
-```markdown
 ![Dashboard](docs/screenshots/dashboard.png)
+
+### Pedidos
+Listagem com filtros por data, mesa, status e cliente, com ações de visualizar e exportar em PDF.
+
 ![Pedidos](docs/screenshots/pedidos.png)
+
+### Mesas
+Controle visual do status de cada mesa (livre, ocupada, reservada), com capacidade e localização.
+
 ![Mesas](docs/screenshots/mesas.png)
+
+### Cardápio
+Gestão de produtos por categoria, com preço e disponibilidade.
+
 ![Cardápio](docs/screenshots/cardapio.png)
+
+### Clientes
+Cadastro com busca por nome, CPF ou e-mail.
+
 ![Clientes](docs/screenshots/clientes.png)
+
+### Conversor de Moeda
+Cotação do Real em tempo real via ExchangeRate-API, para atendimento a clientes estrangeiros.
+
 ![Conversor de Moeda](docs/screenshots/conversor.png)
+
+### Usuários
+Controle de acesso por perfil (gerente / atendente).
+
 ![Usuários](docs/screenshots/usuarios.png)
+
+### Relatório de Faturamento
+Total faturado, pedidos fechados, ticket médio e item mais vendido, filtrável por período.
+
 ![Relatório de Faturamento](docs/screenshots/relatorio.png)
-```
 
 ---
 
