@@ -1,3 +1,26 @@
+# Configuração local com credenciais do banco (use includes/config.example.php como modelo)
 includes/config.php
+
+# Arquivos auxiliares locais
 banco.zip
 gerar_senha.php
+
+# Variáveis de ambiente e segredos
+.env
+.env.*
+!.env.example
+
+# Logs e arquivos temporários
+*.log
+*.tmp
+*.bak
+
+# Dependências (caso sejam adicionadas no futuro)
+vendor/
+node_modules/
+
+# Sistema operacional e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
